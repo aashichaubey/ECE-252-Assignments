@@ -29,7 +29,7 @@ void readwrite (int fd) {
         memset( buffer, 0, buf_size);
         int bytes_read = read (fd, buffer, buf_size - 1);
         int bytes_write = write(1, buffer, bytes_read);
-        if (bytes_read == 0){
+        if (bytes_read <= 0){
             break;
         }
     }
@@ -37,17 +37,24 @@ void readwrite (int fd) {
 }
 
 int main (int argc, char** argv) {
-    for (int i = 0; i<argc; i++){
-        fd = open(argv[i], O_RDWR);
+    int fd;
+    if (argc == 1){
+        readwrite(0);
+        return 0;
+    }
+    
+    for (int i = 1; i<argc; i++){
+        fd = open(argv[i], O_RDONLY);
         if (fd == -1) {
-            printf("Unable to open file ! %s is invalid name \n", argv[1]);
-            return -1;
+            printf("Unable to open file ! %s is invalid name \n", argv[i]);
+            continue;
         }
         readwrite(fd);
         close (fd);
-        return 0;
+        printf("\n");
 
     }
+    return 0;
 
 }
 
